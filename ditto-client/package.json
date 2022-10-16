@@ -18,7 +18,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "concurrently -k \"cross-env BROWSER=none npm start\" \"npx wait-on http://localhost:3000 && electronmon .\""
+    "electron": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electronmon .\""
   },
   "eslintConfig": {
     "extends": [
