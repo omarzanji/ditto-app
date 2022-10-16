@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./screens/App.css";
+import {
+    HashRouter,
+    Redirect,
+    Route, 
+    Switch,
+  } from "react-router-dom";
+  
+import HomeScreen from "./screens/HomeScreen";
+import SettingsScreen from './screens/SettingsScreen';
+import SignInScreen from './screens/SignInScreen';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+    render () {
+        return (
+                
+            <HashRouter>
+                <Redirect to='/' />
+                <Switch>
+                    <Route exact path='/' component={HomeScreen} />
+                    <Route exact path='/SettingsScreen' component={SettingsScreen} />
+                    <Route exact path='/SignInScreen' component={SignInScreen} />
+                </Switch>
+            </HashRouter>
+            
+        );
+    }
+    
 }
 
 export default App;
