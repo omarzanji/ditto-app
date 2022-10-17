@@ -11,7 +11,6 @@ import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from './screens/SettingsScreen';
 import SignInScreen from './screens/SignInScreen';
 
-
 class App extends React.Component {
     render () {
         return (

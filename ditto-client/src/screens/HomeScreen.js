@@ -4,15 +4,28 @@ import {
     Link,
     withRouter
 } from "react-router-dom";
+import Divider from '@mui/material/Divider';
+
+import { status } from "../models/Status";
+import ChatBubbles from "../components/ChatBubbles";
 
 class HomeScreen extends React.Component {
     render () {
         return (
-            <div className="App">
-                <header className="App-header">
-                    <h1>Home Screen</h1>
+            <div className='App'>
+                <header className='App-header'>
+                    <h2>Ditto Dashboard</h2>
                 </header>
-                <footer className="App-footer">
+                <Divider />
+                <div className='Status'>
+                    <p className='Status-text'>Power:</p>
+                    <p className='Status-indicator'>{status.power}</p>
+                </div>
+                <Divider />
+                <body className='App-body'>
+                    <ChatBubbles />
+                </body>
+                <footer className='App-footer'>
                     <Link to="/SettingsScreen">
                         <button className="Nav-button">Settings</button>
                     </Link>
