@@ -22,9 +22,9 @@ class HomeScreen extends React.Component {
                     <p className='Status-indicator'>{status.power}</p>
                 </div>
                 <Divider />
-                <body className='App-body'>
+                <div className='App-body'>
                     <ChatBubbles />
-                </body>
+                </div>
                 <footer className='App-footer'>
                     <Link to="/SettingsScreen">
                         <button className="Nav-button">Settings</button>
