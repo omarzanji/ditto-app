@@ -14,12 +14,12 @@ const ip = 'localhost'
         const timeout = 1000
         const fetchLink = `http://${ip}:42032/${APIRequest}`
         console.log('[API Request] ' + fetchLink)
-        const fetchResponse = await fetch(fetchLink, { // call to postgres database (Promise)
+        const fetchResponse = await fetch(fetchLink, { 
           method: fetchMethod,
           signal: controller.signal
         });
         clearTimeout(id);
-        const responseJson = await fetchResponse.json(); // Promise (use await)
+        const responseJson = await fetchResponse.json(); 
         return responseJson;
       } catch (e) {
         console.log(e);
@@ -32,7 +32,7 @@ const ip = 'localhost'
       try {
         const fetchLink = `http://${ip}:42032/${APIRequest}/?${parameters[0]}=${params[key]}`;
         console.log('[API Request] ' + fetchLink);
-        const fetchResponse = await fetch(fetchLink, { // call to postgres database (Promise)
+        const fetchResponse = await fetch(fetchLink, { 
           method: fetchMethod, 
           signal: controller.signal
         });
