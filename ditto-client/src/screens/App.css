@@ -13,12 +13,21 @@
 }
 
 .App-body {
-  min-height: 65vh;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.StatusBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .Status {
   display: flex;
   padding-left: 50px;
+  padding-right: 50px;
 }
 
 .Status-text {
@@ -32,8 +41,15 @@
 
 .App-footer {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  justify-content:space-between;
+  min-height: 5vh;
+  padding-bottom: 15px;
 }
 
 .Nav-button {

@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { ChatFeed, Message } from "../modules/react-chat-ui-omar-fork"; // changed bubble style a bit
-import { grabConversationHistory } from "../models/db";
+import { grabConversationHistory } from "../models/api";
 
+
+var set = true
 
 export default function ChatBubble() {
 
@@ -20,11 +22,13 @@ export default function ChatBubble() {
     const createConversation = (hist) => {
       let prompts = hist.prompts
       let responses = hist.responses
+      let db_count = Object.keys(prompts).length + Object.keys(responses).length
+      let local_count = data.messages.length-1
       for (var key in prompts) {
         if (prompts.hasOwnProperty(key)) {
           let prompt = prompts[key]
           let response = responses[key]
-          console.log(prompt, response)
+          // console.log(prompt, response)
           temp.messages.push(
             new Message({
               id: 0,
@@ -39,6 +43,7 @@ export default function ChatBubble() {
           )
         }
       }
+      setData(temp)
     }
 
     useEffect(() => {
@@ -49,7 +54,6 @@ export default function ChatBubble() {
         } catch (e) {
           console.log(e)
         }
-        setData(temp)
       }, 1000)
     }, [temp])
     
@@ -60,6 +64,7 @@ export default function ChatBubble() {
         hasInputField={false} // Boolean: use our input, or use your own
         showSenderName // show the name of the user who sent the message
         bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
+        scrollToBottom={false}
         // JSON: Custom bubble styles
         bubbleStyles={{
           text: {

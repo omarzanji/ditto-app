@@ -1,0 +1,17 @@
+.Label {
+    padding-right: 15px;
+    color: white;
+    font-size: calc(10px + 2vmin);
+}
+
+.Bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.Form {
+    display: flex;
+    height: 50px;
+}
