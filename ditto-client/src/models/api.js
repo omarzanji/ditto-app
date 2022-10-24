@@ -4,7 +4,7 @@
  */
 
 // const ip = '192.168.0.105'
-const ip = 'localhost'
+const ip = '192.168.0.248'
 
 /**
  * Function for interacting with Ditto's database.
