@@ -30,14 +30,9 @@ class HomeScreen extends React.Component {
                 <Divider />
                 <div className='App-body'>
                     <ChatBubbles />
-                    <Divider />
-                    <SendMessage />
                 </div>
                 <footer className='App-footer'>
-                    <Divider />
-                    <Link to="/SettingsScreen">
-                        <button className="Nav-button">Settings</button>
-                    </Link>
+                    <SendMessage />
                 </footer>
             </div>
         );

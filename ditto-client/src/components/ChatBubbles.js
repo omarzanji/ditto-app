@@ -37,6 +37,8 @@ export default function ChatBubble() {
         let local_prompts = JSON.parse(window.electron.store.get('prompts'));
         let local_responses = JSON.parse(window.electron.store.get('responses'));
         if (hist != undefined) {
+          window.electron.store.set('prompts', JSON.stringify(hist.prompts));
+          window.electron.store.set('responses', JSON.stringify(hist.responses));
           return {"prompts": hist.prompts, "responses": hist.responses} 
         } else {
           return {"prompts": local_prompts, "responses": local_responses}

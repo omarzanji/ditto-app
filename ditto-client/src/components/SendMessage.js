@@ -13,9 +13,20 @@ export default function SendMessage() {
 
     const handleSubmit = async(event) => {
         event.preventDefault();
-        await sendPrompt(message)
-        setMessage("")
+        if (message !== '') {
+            await sendPrompt(message)
+            setMessage("")
         }
+    }
+
+    const onEnterPress = async(e) => {
+        if(e.keyCode == 13 && e.shiftKey == false) {
+            if (message !== '') {
+                await sendPrompt(message)
+                setMessage("")
+            }
+        }
+    }
 
     useEffect(() => {
 
@@ -36,14 +47,15 @@ export default function SendMessage() {
     return (
         <div className='Contents' >
             <div className='Bar'>
-                <p className='Label'>Message: </p>
                 <form className='Form' style={{height: formHeight}} onSubmit={handleSubmit}>
-                    <input 
+                    <textarea 
+                    onKeyDown={onEnterPress}
+                    className='TextArea'
                     type="text" 
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     />
-                    <input type="submit" value="Send" />
+                    <input className='Submit' type="submit" value="Send" />
                 </form>
             </div>
         </div>
