@@ -4,7 +4,7 @@ exports.default = {
     chatbubbleWrapper: {
         marginTop: 10,
         marginBottom: 10,
-        overflow: 'auto',
+        overflow: 'hidden',
         position: 'relative',
     },
     bubbleGroupHeader: {
