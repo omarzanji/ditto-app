@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from "react";
 import { ChatFeed, Message } from "../modules/react-chat-ui-omar-fork"; // changed bubble style a bit
-import { grabConversationHistory } from "../models/api";
+import { grabConversationHistory, grabConversationHistoryCount } from "../models/api";
 
 var bubblefontSize = 14
 var bubblePadding = 10
 
-var isSaved = false
 var dbOn = false
 
 export default function ChatBubble() {
 
     // First message from Ditto
-    const temp = {
+    const conversation = {
       messages: [
         new Message({
           id: 1,
@@ -20,52 +19,81 @@ export default function ChatBubble() {
       ]
     };
 
-    const [data, setData] = useState(temp)
 
+    const [data, setData] = useState(conversation) 
+
+    /**
+     * Gets Conversation history count and updates if local count is different from Server database.
+     */
     const syncConversationHist = async() => {
-      let hist = await grabConversationHistory()
-      try {
-        createConversation(hist)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
-    const handleSaveConversation = (hist) => {
-      isSaved = window.electron.store.has('prompts')
-      if (isSaved) {
-        let local_prompts = JSON.parse(window.electron.store.get('prompts'));
-        let local_responses = JSON.parse(window.electron.store.get('responses'));
-        if (hist != undefined) {
-          window.electron.store.set('prompts', JSON.stringify(hist.prompts));
-          window.electron.store.set('responses', JSON.stringify(hist.responses));
-          return {"prompts": hist.prompts, "responses": hist.responses} 
-        } else {
-          return {"prompts": local_prompts, "responses": local_responses}
+      let hasHistCount = window.electron.store.has('histCount')
+      if (hasHistCount) { // If there is a local histCount variable, check if need to update from Server
+        let serverHistCount = await grabConversationHistoryCount()
+        let localHistCount = window.electron.store.get('histCount')
+        if (serverHistCount.historyCount === localHistCount.historyCount) {
+          let localHist = getSavedConversation()
+          createConversation(localHist, false)
+        } else { // update state from server
+          let hist = await grabConversationHistory()
+          try {
+            createConversation(hist, true)
+            let histCount = await grabConversationHistoryCount() // grab histCount from Server database
+            window.electron.store.set('histCount', histCount) // store histCount locally
+          } catch (e) {
+            console.log(e)
+          }
         }
-      } else {
-        window.electron.store.set('prompts', JSON.stringify(hist.prompts));
-        window.electron.store.set('responses', JSON.stringify(hist.responses));
-        return {"prompts": hist.prompts, "responses": hist.responses} 
+      } else { // update state from server
+        let hist = await grabConversationHistory()
+        try {
+          createConversation(hist, true)
+          let histCount = await grabConversationHistoryCount() // grab histCount from Server database
+          window.electron.store.set('histCount', histCount) // store histCount locally
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
 
-    const createConversation = async(hist) => {
-      let conversation = handleSaveConversation(hist)
-      let prompts = conversation.prompts
-      let responses = conversation.responses
+    /**
+     * Gets local electron-store cached conversation history.
+     * @returns {prompts, responses} prompts and responses objects 
+     */
+    const getSavedConversation = () => {
+      let prompts = JSON.parse(window.electron.store.get('prompts'))
+      let responses = JSON.parse(window.electron.store.get('responses'))
+      return {prompts, responses}
+    }
+
+    /**
+     * Save updated history locally.
+     */
+    const handleSaveConversation = (hist) => {
+      window.electron.store.set('prompts', JSON.stringify(hist.prompts));
+      window.electron.store.set('responses', JSON.stringify(hist.responses));
+    }
+
+    /**
+     * Creates renderable conversation history that updates the sate.
+     * @param {*} hist conversation history response from API
+     * @param save boolean to save locally or not
+     */
+    const createConversation = async(hist, save) => {
+      if (save) {handleSaveConversation(hist)}
+      let prompts = hist.prompts
+      let responses = hist.responses
       for (var key in prompts) {
         if (prompts.hasOwnProperty(key)) {
           let prompt = prompts[key]
           let response = responses[key]
           // console.log(prompt, response)
-          temp.messages.push(
+          conversation.messages.push(
             new Message({
               id: 0,
               message: prompt
             })
           )
-          temp.messages.push(
+          conversation.messages.push(
             new Message({
               id: 1,
               message: response
@@ -73,7 +101,7 @@ export default function ChatBubble() {
           )
         }
       }
-      setData(temp)
+      setData(conversation)
     }
 
     useEffect(() => {
@@ -96,7 +124,7 @@ export default function ChatBubble() {
       setTimeout(async() => {
         syncConversationHist()
       }, 1000)
-    }, [temp])
+    }, [conversation])
     
     return (
       <ChatFeed
