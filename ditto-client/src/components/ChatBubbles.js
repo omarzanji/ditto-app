@@ -5,12 +5,10 @@ import { grabConversationHistory, grabConversationHistoryCount } from "../models
 var bubblefontSize = 14
 var bubblePadding = 10
 
-var dbOn = false
-
 export default function ChatBubble() {
 
     // First message from Ditto
-    const conversation = {
+    let conversation = {
       messages: [
         new Message({
           id: 1,
@@ -19,8 +17,9 @@ export default function ChatBubble() {
       ]
     };
 
+    const [histCount, setCount] = useState(0) 
 
-    const [data, setData] = useState(conversation) 
+    const [conv, setConversation] = useState(conversation)
 
     /**
      * Gets Conversation history count and updates if local count is different from Server database.
@@ -30,14 +29,16 @@ export default function ChatBubble() {
       if (hasHistCount) { // If there is a local histCount variable, check if need to update from Server
         let serverHistCount = await grabConversationHistoryCount()
         let localHistCount = window.electron.store.get('histCount')
-        if (serverHistCount.historyCount === localHistCount.historyCount) {
+        if (serverHistCount===undefined || serverHistCount.historyCount === localHistCount.historyCount) {
           let localHist = getSavedConversation()
           createConversation(localHist, false)
+          if (histCount === 0){setCount(localHistCount)}
         } else { // update state from server
           let hist = await grabConversationHistory()
           try {
             createConversation(hist, true)
             let histCount = await grabConversationHistoryCount() // grab histCount from Server database
+            setCount(histCount)
             window.electron.store.set('histCount', histCount) // store histCount locally
           } catch (e) {
             console.log(e)
@@ -48,6 +49,7 @@ export default function ChatBubble() {
         try {
           createConversation(hist, true)
           let histCount = await grabConversationHistoryCount() // grab histCount from Server database
+          setCount(histCount)
           window.electron.store.set('histCount', histCount) // store histCount locally
         } catch (e) {
           console.log(e)
@@ -101,7 +103,7 @@ export default function ChatBubble() {
           )
         }
       }
-      setData(conversation)
+      setConversation(conversation)
     }
 
     useEffect(() => {
@@ -124,12 +126,12 @@ export default function ChatBubble() {
       setTimeout(async() => {
         syncConversationHist()
       }, 1000)
-    }, [conversation])
+    }, [histCount, conversation])
     
     return (
       <ChatFeed
-        messages={data.messages} // Boolean: list of message objects
-        isTyping={data.is_typing} // Boolean: is the recipient typing
+        messages={conv.messages} // Boolean: list of message objects
+        isTyping={conv.is_typing} // Boolean: is the recipient typing
         hasInputField={false} // Boolean: use our input, or use your own
         showSenderName // show the name of the user who sent the message
         bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
